@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Heart Disease Predictor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(to right, #e0eafc, #cfdef3);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 40px 50px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+            color: #333;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 12px;
+            box-shadow: inset 2px 2px 6px #d1d9e6, inset -3px -3px 7px #ffffff;
+            background-color: #f0f0f3;
+            font-size: 15px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        input[type="radio"] {
+            margin-right: 6px;
+        }
+
+        .radio-group {
+            margin-bottom: 20px;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #007bff55;
+            background-color: #fff;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #007BFF;
+            color: #fff;
+            font-size: 16px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease-in-out, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 18px;
+            background: #e9f7ef;
+            border-left: 6px solid #28a745;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 10px;
+            color: #155724;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 20px;
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Heart Disease Risk Predictor</h2>
+        <form action="/predict" method="POST">
+            <label>Age (29 - 77)</label>
+            <input type="number" name="age" min="29" max="77" required>
+
+            <label>Sex</label>
+            <div class="radio-group">
+                <label><input type="radio" name="sex" value="0" required> Female</label>
+                <label><input type="radio" name="sex" value="1"> Male</label>
+            </div>
+
+            <label>Chest Pain Type</label>
+            <select name="cp" required>
+                <option value="0">0 - Typical Angina</option>
+                <option value="1">1 - Atypical Angina</option>
+                <option value="2">2 - Non-anginal Pain</option>
+                <option value="3">3 - Asymptomatic</option>
+            </select>
+
+            <label>Resting Blood Pressure (94 - 200 mm Hg)</label>
+            <input type="number" name="trestbps" min="94" max="200" required>
+
+            <label>Cholesterol Level (126 - 564 mg/dl)</label>
+            <input type="number" name="chol" min="126" max="564" required>
+
+            <label>Fasting Blood Sugar</label>
+            <div class="radio-group">
+                <label><input type="radio" name="fbs" value="0" required> No</label>
+                <label><input type="radio" name="fbs" value="1"> Yes</label>
+            </div>
+
+            <label>Resting ECG Results</label>
+            <select name="restecg" required>
+                <option value="0">0 - Normal</option>
+                <option value="1">1 - ST-T Abnormality</option>
+                <option value="2">2 - Left Ventricular Hypertrophy</option>
+            </select>
+
+            <label>Max Heart Rate Achieved (71 - 202 bpm)</label>
+            <input type="number" name="thalach" min="71" max="202" required>
+
+            <label>Exercise Induced Angina</label>
+            <div class="radio-group">
+                <label><input type="radio" name="exang" value="0" required> No</label>
+                <label><input type="radio" name="exang" value="1"> Yes</label>
+            </div>
+
+            <label>ST Depression (0.0 - 6.2)</label>
+            <input type="number" step="any" name="oldpeak" min="0" max="6.2" required>
+
+            <label>Slope of Peak Exercise ST Segment</label>
+            <select name="slope" required>
+                <option value="0">0 - Upsloping</option>
+                <option value="1">1 - Flat</option>
+                <option value="2">2 - Downsloping</option>
+            </select>
+
+            <label>Number of Major Vessels (0 - 3)</label>
+            <input type="number" name="ca" min="0" max="3" required>
+
+            <label>Thalassemia Type</label>
+            <select name="thal" required>
+                <option value="1">1 - Fixed Defect</option>
+                <option value="2">2 - Normal</option>
+                <option value="3">3 - Reversible Defect</option>
+            </select>
+
+            <button type="submit">Predict</button>
+        </form>
+
+        {% if result %}
+        <div class="result">
+            {{ result }}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
